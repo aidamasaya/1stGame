@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>ジャンプ速度</summary>
     [SerializeField] float m_jumpSpeed = 5f;
     /// <summary>ジャンプ中にジャンプボタンを離した時の上昇速度減衰率</summary>
-    [SerializeField] float m_gravityDrag = .8f;
+    [SerializeField] float m_gravityDrag = .4f;
     Rigidbody2D m_rb = default;
     /// <summary>接地フラグ</summary>
     bool m_isGrounded = false;
@@ -17,8 +17,11 @@ public class PlayerController : MonoBehaviour
     Animator m_anim = default;
     SpriteRenderer m_sprite = default;
     float m_h = 0;
-
-    // Start is called before the first frame update
+    public static bool dead = false;
+    [SerializeField] Transform _muzzle = default;
+    [SerializeField] BulletController _bullet = default;
+    bool isRight;
+   
     void Start()
     {
         m_rb = GetComponent<Rigidbody2D>();
@@ -27,7 +30,7 @@ public class PlayerController : MonoBehaviour
         m_initialPosition = this.transform.position;
     }
 
-    // Update is called once per frame
+   
     void Update()
     {
         m_h = Input.GetAxis("Horizontal");
@@ -52,10 +55,31 @@ public class PlayerController : MonoBehaviour
         {
             this.transform.position = m_initialPosition;
         }
+        if(Input.GetButtonDown("Fire1"))
+        {
+            Instantiate(_bullet, _muzzle.position, transform.rotation);
+        }
+        if (Input.GetButton("Horizontal"))
+        {
+            if (isRight && m_h < 0)
+            {
+                this.transform.Rotate(0f, 180f, 0f);
+                isRight = false;
+            }
+            if (!isRight && m_h > 0)
+            {
+                this.transform.Rotate(0f, 180f, 0f);
+                isRight = true;
+            }
+        }
     }
     void FixedUpdate()
     {
         m_rb.AddForce(m_h * m_movePower * Vector2.right);
+        if (Input.GetButtonDown("Jump"))
+        {
+            m_rb.AddForce(Vector2.up * m_jumpSpeed, ForceMode2D.Impulse);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -82,5 +106,9 @@ public class PlayerController : MonoBehaviour
         //    m_anim.SetFloat("SpeedY", m_rb.velocity.y);
         //    m_anim.SetBool("IsGrounded", m_isGrounded);
         //}
+    }
+    public void Dead()
+    {
+        dead = true;
     }
 }
