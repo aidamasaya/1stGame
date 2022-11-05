@@ -19,8 +19,9 @@ public class PlayerController : MonoBehaviour
     float m_h = 0;
     public static bool dead = false;
     [SerializeField] Transform _muzzle = default;
-    [SerializeField] BulletController _bullet = default;
+    [SerializeField] BulletController _bullet = null;
     bool isRight;
+    bool item = false;
    
     void Start()
     {
@@ -55,10 +56,14 @@ public class PlayerController : MonoBehaviour
         {
             this.transform.position = m_initialPosition;
         }
-        if(Input.GetButtonDown("Fire1"))
+        if (item)
         {
-            Instantiate(_bullet, _muzzle.position, transform.rotation);
+            if (Input.GetButtonDown("Fire1"))
+            {
+                Instantiate(_bullet, _muzzle.position, transform.rotation);
+            }
         }
+        
         if (Input.GetButton("Horizontal"))
         {
             if (isRight && m_h < 0)
@@ -85,6 +90,12 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         m_isGrounded = true;
+        if(collision.gameObject.tag == "Item")
+        {
+             Destroy(collision.gameObject);
+            item = true;
+        }
+
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -111,4 +122,5 @@ public class PlayerController : MonoBehaviour
     {
         dead = true;
     }
+    
 }

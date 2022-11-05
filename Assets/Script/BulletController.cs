@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
+    BaseEnemyController _enemy;
     Rigidbody2D _rb;
     [SerializeField] float _movespeed;
     bool _h;
@@ -11,6 +12,7 @@ public class BulletController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _enemy = GetComponent<BaseEnemyController>();
         GetComponent<Rigidbody2D>().velocity = -1 *  transform.right * _movespeed;
     }
 
@@ -23,6 +25,7 @@ public class BulletController : MonoBehaviour
     {
         if(collision.gameObject.tag == "enemy" || collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Ground")
         {
+            _enemy._hp -= 1;  
             Destroy(this);
         }
     }
