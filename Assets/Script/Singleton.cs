@@ -11,8 +11,15 @@ public class Singleton : MonoBehaviour
     string _pointNameOnSceneLoaded = "";
     GameObject _player = default;
     int _coin = 0; //通貨アイテム
+    /// <summary>一画面内に許される弾の数</summary>
+    [SerializeField] int _bulletsInScene = 4;
 
     //public int BulletsInScene <-  画面内に連射可能な球数後に書く
+    public int BulletsInScene
+    {
+        get { return _bulletsInScene; }
+        set { _bulletsInScene = value; }
+    }
 
     /// <summary>
     /// シーンが切り替わる時のプレイヤーの向き

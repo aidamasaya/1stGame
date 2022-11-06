@@ -12,7 +12,6 @@ public class BulletController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _enemy = GetComponent<BaseEnemyController>();
         GetComponent<Rigidbody2D>().velocity = -1 *  transform.right * _movespeed;
     }
 
@@ -23,10 +22,16 @@ public class BulletController : MonoBehaviour
     }
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "enemy" || collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Ground")
+        if(collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Ground")
         {
-            _enemy._hp -= 1;  
-            Destroy(this);
+            Destroy(this.gameObject);
+            PlayerController._shoot -= 1;
+        }
+        if(collision.gameObject.tag == "enemy")
+        {
+            _enemy._hp -= 1;
+            PlayerController._shoot -= 1;
+            Destroy(this.gameObject);
         }
     }
 }
